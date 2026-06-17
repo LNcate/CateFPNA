@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미수채권 대시보드 통합 관리자</title>
+<style>
+  :root { --ink: #0B1F33; --paper: #FAFAF7; --accent: #3730A3; --line: #E7E5DF; }
+  body { margin: 0; padding: 0; display: flex; height: 100vh; font-family: -apple-system, "Segoe UI", sans-serif; overflow: hidden; background: var(--paper); }
+  
+  /* 왼쪽 사이드바 (날짜 목록) */
+  .sidebar { width: 260px; background: var(--ink); color: white; display: flex; flex-direction: column; }
+  .sidebar-header { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .sidebar-header h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .sidebar-header p { margin: 6px 0 0; font-size: 12px; color: #9CA3AF; }
+  
+  .history-list { flex: 1; overflow-y: auto; padding: 12px 0; margin: 0; list-style: none; }
+  .history-item { padding: 12px 20px; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: #D1D5DB; transition: all 0.2s; }
+  .history-item:hover { background: rgba(255,255,255,0.05); color: white; }
+  .history-item.active { background: var(--accent); color: white; border-left-color: white; font-weight: bold; }
+  
+  /* 오른쪽 메인 화면 (대시보드가 뜨는 곳) */
+  .main-content { flex: 1; display: flex; flex-direction: column; background: var(--paper); }
+  #dashboard-viewer { width: 100%; height: 100%; border: none; background: #fff; }
+</style>
+</head>
+<body>
+
+  <!-- 왼쪽 날짜 선택 메뉴 -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>📊 대시보드 히스토리</h2>
+      <p>날짜를 선택해 리포트를 확인하세요.</p>
+    </div>
+    <ul class="history-list" id="menuList">
+      <!-- JavaScript로 리스트가 생성됩니다 -->
+    </ul>
+  </div>
+
+  <!-- 오른쪽 실제 대시보드가 보여질 창 -->
+  <div class="main-content">
+    <!-- 처음 접속 시 띄워줄 안내 페이지나 가장 최신 파일을 src에 넣으세요 -->
+    <iframe id="dashboard-viewer" src="about:blank"></iframe>
+  </div>
+
+<script>
+  // ★ 여기에 앞으로 생성될 HTML 파일들의 날짜와 파일명을 누적해서 적어주시면 됩니다.
+  const dashboards = [
+    { date: "2026-06-14 (최신)", filename: "미수채권_대시보드_20260614.html" },
+    { date: "2026-06-06", filename: "dashboard_20260606.html" },
+    { date: "2026-05-30", filename: "dashboard_20260530.html" }
+  ];
+
+  const menuList = document.getElementById('menuList');
+  const viewer = document.getElementById('dashboard-viewer');
+
+  // 사이드바 메뉴 생성 함수
+  dashboards.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+    li.textContent = item.date;
+    
+    // 클릭 시 이벤트
+    li.onclick = () => {
+      // 1. 모든 메뉴의 active 클래스 제거 후 클릭한 메뉴만 활성화
+      document.querySelectorAll('.history-item').forEach(el => el.classList.remove('active'));
+      li.classList.add('active');
+      
+      // 2. 오른쪽 iframe 창에 해당 파일 띄우기
+      viewer.src = item.filename;
+    };
+
+    menuList.appendChild(li);
+
+    // 페이지를 처음 열었을 때 가장 최신(첫 번째) 대시보드를 자동으로 보여줌
+    if(index === 0) {
+      li.click();
+    }
+  });
+</script>
+</body>
+</html>
