@@ -103,7 +103,7 @@ table.ledger{width:100%;border-collapse:collapse;margin-top:4px;font-size:12.5px
 </div>
 <div class="apibar">
   <span class="alabel">🔗 Apps Script 웹앱 연결</span>
-  <input id="apiurl" placeholder="배포된 웹앱 URL (https://script.google.com/macros/s/…/exec)">
+  <input id="apiurl" placeholder="배포된 웹앱 URL" value="https://script.google.com/macros/s/AKfycbz_yy_At4yaNy2h6eoAg5bRS3esnHoIyQujlLW9ZiyuvCDRBllkwTpAM1IZFQoGkKg_/exec">
   <button id="connectbtn">연결</button>
   <span class="astatus" id="astatus">미연결 — 아래 안내에 따라 웹앱을 배포하고 주소를 붙여넣으세요</span>
 </div>
@@ -148,7 +148,7 @@ table.ledger{width:100%;border-collapse:collapse;margin-top:4px;font-size:12.5px
 <script>
 
 var COMMENTS={}, lens={type:'all'}, sortK='b', sortDir=-1, q='', total=0, overdue=0;
-var openRow=null, API_URL='', SAVING=false;
+var openRow=null, API_URL='https://script.google.com/macros/s/AKfycbz_yy_At4yaNy2h6eoAg5bRS3esnHoIyQujlLW9ZiyuvCDRBllkwTpAM1IZFQoGkKg_/exec', SAVING=false;
 function won(v){return (Number(v)||0).toLocaleString('ko-KR');}
 function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 var STAGES=[{key:'정상',label:'정상',color:'#2F855A'},{key:'1단계 미납안내',label:'1단계 미납안내',color:'#475569'},
@@ -283,10 +283,10 @@ function wireOnce(){
   var s=document.getElementById('search');if(s)s.oninput=function(e){q=e.target.value;render();};
   document.querySelectorAll('.ledger thead th[data-k]').forEach(function(th){th.onclick=function(){var k=th.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=(['n','s','g','o'].indexOf(k)>=0)?1:-1;}render();};});
   var inp=document.getElementById('apiurl'),btn=document.getElementById('connectbtn');
-  try{var saved=localStorage.getItem('gas_url');if(saved){inp.value=saved;API_URL=saved;}}catch(e){}
+  try{var saved=localStorage.getItem('gas_url');if(saved){inp.value=saved;API_URL=saved;}else if(API_URL){inp.value=API_URL;}}catch(e){if(API_URL)inp.value=API_URL;}
   btn.onclick=function(){API_URL=inp.value.trim();loadComments();};
   inp.onkeydown=function(e){if(e.key==='Enter')btn.onclick();};
-  if(API_URL)loadComments();
+  if(API_URL){loadComments();}
 }
 function boot(){computeTotals();buildStatic();applyComments();wireOnce();render();}
 
