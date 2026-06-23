@@ -151,6 +151,12 @@ var COMMENTS={}, lens={type:'all'}, sortK='b', sortDir=-1, q='', total=0, overdu
 var openRow=null, API_URL='https://script.google.com/macros/s/AKfycbz_yy_At4yaNy2h6eoAg5bRS3esnHoIyQujlLW9ZiyuvCDRBllkwTpAM1IZFQoGkKg_/exec', SAVING=false;
 function won(v){return (Number(v)||0).toLocaleString('ko-KR');}
 function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function shortDate(v){if(!v)return '';var s=String(v).trim();
+  var m=s.match(/(\d{4})-(\d{2})-(\d{2})/);                       // YYYY-MM-DD
+  if(m)return m[1].slice(2)+'-'+m[2]+'-'+m[3];
+  var d=new Date(s);                                               // Date 객체/문자열
+  if(!isNaN(d.getTime())){var p=function(n){return String(n).padStart(2,'0');};return String(d.getFullYear()).slice(2)+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
+  return s;}
 var STAGES=[{key:'정상',label:'정상',color:'#2F855A'},{key:'1단계 미납안내',label:'1단계 미납안내',color:'#475569'},
   {key:'2단계 중지예고',label:'2단계 중지예고',color:'#B45309'},{key:'3단계 중지·법적절차',label:'3단계 중지·법적',color:'#B91C1C'}];
 function stColor(s){var x=STAGES.filter(function(o){return o.key===s;})[0];return x?x.color:'#475569';}
@@ -223,7 +229,7 @@ function render(){
   var tb=document.getElementById('lbody'),html='';
   if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">조건에 맞는 거래처가 없습니다.</td></tr>';return;}
   list.forEach(function(v){
-    var gc=v.g?'g'+v.g:'gNone';var hist=v._hist||[];var hb=hist.length?'<span class="histbadge">이력 '+hist.length+'</span>':'';
+    var gc=v.g?'g'+v.g:'gNone';var hist=v._hist||[];var hb='';
     var cmt=v.co?esc(v.co):'<span class="zerobal">·</span>';
     var isOpen=(openRow===v.n);
     html+='<tr class="vrow'+(isWarn(v)?' flagged':'')+'" data-nm="'+esc(v.n)+'">'
@@ -236,10 +242,10 @@ function render(){
       +'<td>'+esc(v.o||'·')+'</td>'
       +'<td class="memo">'+esc(v.mm||'')+'</td>'
       +'<td>'+cmt+hb+'</td>'
-      +'<td class="pd">'+(v.pd?esc(v.pd):'<span class="zerobal">·</span>')+'</td>'
+      +'<td class="pd">'+(v.pd?esc(shortDate(v.pd)):'<span class="zerobal">·</span>')+'</td>'
       +'</tr>';
     if(isOpen && API_URL) html+=inputPanelHTML(v);
-    if(!isOpen && hist.length>0) html+=histHTML(v);
+    // 이력 펼침 제거: 최근 1건만 행에 표시
   });
   tb.innerHTML=html;
   var rb=document.getElementById('reset');if(rb)rb.onclick=function(e){e.stopPropagation();lens={type:'all'};openRow=null;render();};
