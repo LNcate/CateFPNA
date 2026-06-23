@@ -256,7 +256,7 @@ function saveComment(nm){
   var promise=document.getElementById('i_promise').value;
   if(!comment){document.getElementById('i_comment').style.borderColor='#B91C1C';document.getElementById('i_comment').focus();return;}
   var btn=document.getElementById('savebtn');btn.disabled=true;btn.textContent='저장 중…';SAVING=true;
-  fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:nm,date:date,owner:owner,comment:comment,promise:promise})})
+  fetch(API_URL,{method:'POST',body:JSON.stringify({name:nm,date:date,owner:owner,comment:comment,promise:promise})})
     .then(function(r){return r.json();})
     .then(function(d){
       if(!d.ok)throw new Error(d.error||'저장 실패');
