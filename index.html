@@ -51,9 +51,7 @@
     { date: "2026-06-22", filename: "미수채권_대시보드_20260622.html" },
     { date: "2026-06-17", filename: "미수채권_대시보드_20260617.html" },
     { date: "2026-06-14", filename: "미수채권_대시보드_20260614.html" },
-{ date: "채권연령현황", filename: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMjckpPGtN92qKAvD6Y6KDZ-KIM9gT8EglzUkevo1TBv5ubtzZ5eIIWBAP26SGOoFLjz6upMnqhdgI/pubhtml" }
-
-];
+{ date: "채권연령현황", filename: "https://docs.google.com/spreadsheets/d/1dI7iWHbZX0INWcZlPrsg1piDVqROYnXm1caToE_plkw/edit?gid=1443042445#gid=1443042445", isExternal: true }];
 
   const menuList = document.getElementById('menuList');
   const viewer = document.getElementById('dashboard-viewer');
@@ -66,6 +64,9 @@
     
     // 클릭 시 이벤트
     li.onclick = () => {
+if (item.isExternal) {
+        window.open(item.filename, '_blank');
+        return;}
       // 1. 모든 메뉴의 active 클래스 제거 후 클릭한 메뉴만 활성화
       document.querySelectorAll('.history-item').forEach(el => el.classList.remove('active'));
       li.classList.add('active');
